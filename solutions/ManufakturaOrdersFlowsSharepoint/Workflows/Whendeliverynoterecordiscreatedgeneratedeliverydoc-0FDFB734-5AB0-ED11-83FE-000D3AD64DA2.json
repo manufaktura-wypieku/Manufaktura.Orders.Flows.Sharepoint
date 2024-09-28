@@ -1,0 +1,415 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps_1": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_6e438"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_e53fc"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_wordonlinebusiness": {
+        "api": {
+          "name": "shared_wordonlinebusiness"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "mb_sharedwordonlinebusiness_1dce4"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_sharepointonline": {
+        "api": {
+          "name": "shared_sharepointonline"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "mb_sharedsharepointonline_caad0"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "SharePoint Data source (mb_SharePointDataSource)": {
+          "defaultValue": "https://manufakturawypieku.sharepoint.com/sites/Manufaktura-DEV",
+          "type": "String",
+          "metadata": {
+            "schemaName": "mb_SharePointDataSource"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "mb_deliverynote",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/runas": 1
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "d139b47d-0401-473b-98fc-a0913731701b"
+          }
+        }
+      },
+      "actions": {
+        "Get_Order,_Customer_and_Order_Items": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "mb_orders",
+              "recordId": "@triggerOutputs()?['body/_mb_order_value']",
+              "$expand": "mb_Customer_account($select=name,mb_accountnumber,address1_line1, address1_postalcode, address1_city),mb_mb_orderitem_Order_mb_order"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "76188b31-4fbd-4fe2-959d-f04418774b92"
+          }
+        },
+        "Initialize_variable_-_customer": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "customer",
+                "type": "object",
+                "value": "@outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_Customer_account']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Get_Order,_Customer_and_Order_Items": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "badc9ce9-9a58-4261-9097-81584c8f17fc"
+          }
+        },
+        "Initialize_variable_-_order_items": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "order_items",
+                "type": "array",
+                "value": "@outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_mb_orderitem_Order_mb_order']"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_variable_-_customer": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "72acaf6c-928c-4d93-a89b-a0f0b45df7f7"
+          }
+        },
+        "Initialize_variable_-_order_items_fields": {
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "order_items_fields",
+                "type": "array"
+              }
+            ]
+          },
+          "runAfter": {
+            "Initialize_variable_-_order_items": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "70327d03-5e62-4964-a206-573f9f699330"
+          }
+        },
+        "Apply_to_each": {
+          "type": "Foreach",
+          "foreach": "@variables('order_items')",
+          "actions": {
+            "Get_product": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "entityName": "mb_products",
+                  "recordId": "@items('Apply_to_each')?['_mb_product_value']",
+                  "$select": "mb_name_en,mb_productnumber"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "connectionName": "shared_commondataserviceforapps"
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "5c10dd92-4c7a-4750-9d49-706252fa92d0"
+              }
+            },
+            "Append_to_array_variable": {
+              "type": "AppendToArrayVariable",
+              "inputs": {
+                "name": "order_items_fields",
+                "value": {
+                  "OrderItemName_PL": "@items('Apply_to_each')?['_mb_product_value@OData.Community.Display.V1.FormattedValue']",
+                  "OrderItemName_EN": "@outputs('Get_product')?['body/mb_name_en']",
+                  "Quantity": "@items('Apply_to_each')?['mb_quantity']",
+                  "PriceUnit": "@formatNumber(items('Apply_to_each')?['mb_priceunit'],'N2')",
+                  "Value": "@formatNumber(items('Apply_to_each')?['mb_value'],'N2')",
+                  "ProductNumber": "@body('Get_product')?['mb_productnumber']"
+                }
+              },
+              "runAfter": {
+                "Get_product": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "65f2f026-a5d4-4a49-87b1-9624c6b1fbde"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_-_order_items_fields": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "64a38616-261a-438a-aac2-3e3ce3d3e20c"
+          }
+        },
+        "Update_a_row": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "mb_deliverynotes",
+              "recordId": "@triggerOutputs()?['body/mb_deliverynoteid']",
+              "item/mb_name": "DN-@{outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_name']}",
+              "item/mb_url": "@{parameters('SharePoint Data source (mb_SharePointDataSource)')}@{outputs('Create_pdf_file')?['body/Path']}"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "UpdateRecord",
+              "connectionName": "shared_commondataserviceforapps_1"
+            }
+          },
+          "runAfter": {
+            "Create_pdf_file": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "56dc7c8f-3dd0-468f-98f2-1236e9b29109"
+          }
+        },
+        "Populate_a_Microsoft_Word_template": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "source": "@parameters('SharePoint Data source (mb_SharePointDataSource)')",
+              "drive": "b!cWvJyrTtW02i8m6aekMMOyP9dJd_QKpDu2hPhXUs9JTnDgkdOFRdQaRqqLvGSvrI",
+              "file": "01JDWDTZFQ3ZSP2NA2BZF35UWB23JQCXAD",
+              "dynamicFileSchema/263186363": "@variables('customer')?['address1_line1']",
+              "dynamicFileSchema/1749068740": "@outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_deliverydate@OData.Community.Display.V1.FormattedValue']",
+              "dynamicFileSchema/2093273143": "@variables('customer')?['address1_postalcode']",
+              "dynamicFileSchema/-1847864220": "@variables('customer')?['mb_accountnumber']",
+              "dynamicFileSchema/-818341669": "@variables('customer')?['name']",
+              "dynamicFileSchema/-509219254": "@variables('customer')?['address1_city']",
+              "dynamicFileSchema/-1781177440": "@body('Parse_JSON_-_array_with_order_items')",
+              "dynamicFileSchema/-1305309804": "@formatNumber(outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_total'],'N2')"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_wordonlinebusiness",
+              "operationId": "CreateFileItem",
+              "connectionName": "shared_wordonlinebusiness"
+            }
+          },
+          "runAfter": {
+            "Parse_JSON_-_array_with_order_items": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "01JDWDTZBSCJPUVKDSHVDJ6COI7K4MYNBR": "/Templates/delivery_note.docx",
+            "operationMetadataId": "64b62acf-7c1e-43ba-99c4-b827cd72ee53",
+            "01JDWDTZHPO4Y2NHQTUZE2KUPUD6XN32HM": "/Templates/delivery_note.docx",
+            "01JDWDTZFZYAIDEBYQRVA35QIOZLIJT44Q": "/Templates/delivery_note_20231504.docx",
+            "01JDWDTZFQ3ZSP2NA2BZF35UWB23JQCXAD": "/Templates/delivery_note_patterns_footer.docx",
+            "01YSGD4ZHGRQIOWC5TSVDIPPOQM22KDTA6": "/Templates/delivery_note_patterns_footer.docx"
+          }
+        },
+        "Convert_Word_Document_to_PDF": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "source": "@parameters('SharePoint Data source (mb_SharePointDataSource)')",
+              "drive": "b!cWvJyrTtW02i8m6aekMMOyP9dJd_QKpDu2hPhXUs9JTnDgkdOFRdQaRqqLvGSvrI",
+              "file": "/Delivery notes/@{outputs('Create_file')?['body/Name']}"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_wordonlinebusiness",
+              "operationId": "GetFilePDF",
+              "connectionName": "shared_wordonlinebusiness"
+            }
+          },
+          "runAfter": {
+            "Create_file": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "24be7c63-b608-480a-803d-8a2b39a94980"
+          }
+        },
+        "Create_file": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "@parameters('SharePoint Data source (mb_SharePointDataSource)')",
+              "folderPath": "/Shared Documents/Delivery notes/",
+              "name": "DN-@{outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_name']}-@{triggerOutputs()?['body/createdon']}.docx",
+              "body": "@body('Populate_a_Microsoft_Word_template')"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "CreateFile",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Populate_a_Microsoft_Word_template": [
+              "Succeeded"
+            ]
+          },
+          "runtimeConfiguration": {
+            "contentTransfer": {
+              "transferMode": "Chunked"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "d6b9f40c-4a7d-4a08-b9bd-2de289cb8076"
+          }
+        },
+        "Create_pdf_file": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "@parameters('SharePoint Data source (mb_SharePointDataSource)')",
+              "folderPath": "/Shared Documents/Delivery notes",
+              "name": "DN-@{outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_name']}-@{triggerOutputs()?['body/createdon']}.pdf",
+              "body": "@body('Convert_Word_Document_to_PDF')"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "CreateFile",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "runAfter": {
+            "Convert_Word_Document_to_PDF": [
+              "Succeeded"
+            ]
+          },
+          "runtimeConfiguration": {
+            "contentTransfer": {
+              "transferMode": "Chunked"
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "bc10873d-a0fb-4838-bc76-abc9952ea1c1"
+          }
+        },
+        "Compose_-_sort_products_by_ProductNumber": {
+          "type": "Compose",
+          "inputs": "@{sort(variables('order_items_fields'), 'ProductNumber')}\n",
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          }
+        },
+        "Parse_JSON_-_array_with_order_items": {
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@outputs('Compose_-_sort_products_by_ProductNumber')",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "OrderItemName_PL": {
+                    "type": "string"
+                  },
+                  "OrderItemName_EN": {
+                    "type": "string"
+                  },
+                  "Quantity": {
+                    "type": "integer"
+                  },
+                  "PriceUnit": {
+                    "type": "string"
+                  },
+                  "Value": {
+                    "type": "string"
+                  },
+                  "ProductNumber": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "OrderItemName_PL",
+                  "OrderItemName_EN",
+                  "Quantity",
+                  "PriceUnit",
+                  "Value",
+                  "ProductNumber"
+                ]
+              }
+            }
+          },
+          "runAfter": {
+            "Compose_-_sort_products_by_ProductNumber": [
+              "Succeeded"
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}
