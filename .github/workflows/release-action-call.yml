@@ -1,0 +1,21 @@
+name: Release action
+# Call the reusable workflow release-solution-with-inputs.yml
+# Release your solution to prod when you create a new release.
+
+on:
+  release:
+    types: [created]
+permissions:
+  contents: write
+jobs:
+  Release-solution:
+    uses: ./.github/workflows/release-solution-to-prod.yml
+    with:
+      #You can specify the solution name here
+      solution_name: ManufakturaOrdersFlowsSharepoint
+      #Update your values here
+      PRODUCTION_ENVIRONMENT_URL: https://manufaktura.crm11.dynamics.com/
+      CLIENT_ID: 6a478448-0380-4a07-8b3f-aa5a3ce468db
+      TENANT_ID: 67734212-06c3-46e9-9205-f6aa9d7be810
+    secrets:
+      envSecret: ${{ secrets.PowerPlatformSPN }}
