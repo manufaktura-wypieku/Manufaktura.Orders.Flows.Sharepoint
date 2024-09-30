@@ -242,13 +242,13 @@
             "parameters": {
               "source": "@parameters('SharePoint Data source (mb_SharePointDataSource)')",
               "drive": "b!cWvJyrTtW02i8m6aekMMOyP9dJd_QKpDu2hPhXUs9JTnDgkdOFRdQaRqqLvGSvrI",
-              "file": "01JDWDTZFQ3ZSP2NA2BZF35UWB23JQCXAD",
-              "dynamicFileSchema/263186363": "@variables('customer')?['address1_line1']",
-              "dynamicFileSchema/1749068740": "@outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_deliverydate@OData.Community.Display.V1.FormattedValue']",
-              "dynamicFileSchema/2093273143": "@variables('customer')?['address1_postalcode']",
-              "dynamicFileSchema/-1847864220": "@variables('customer')?['mb_accountnumber']",
+              "file": "01JDWDTZBMG6AT32BGOZF3RBSYYLOKTJUN",
+              "dynamicFileSchema/964466789": "@variables('customer')?['address1_line1']",
+              "dynamicFileSchema/1693802890": "@variables('customer')?['address1_city']",
+              "dynamicFileSchema/-1668397503": "@variables('customer')?['mb_accountnumber']",
+              "dynamicFileSchema/-689995792": "@outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_deliverydate@OData.Community.Display.V1.FormattedValue']",
               "dynamicFileSchema/-818341669": "@variables('customer')?['name']",
-              "dynamicFileSchema/-509219254": "@variables('customer')?['address1_city']",
+              "dynamicFileSchema/-1303077992": "@variables('customer')?['address1_postalcode']",
               "dynamicFileSchema/-1781177440": "@body('Parse_JSON_-_array_with_order_items')",
               "dynamicFileSchema/-1305309804": "@formatNumber(outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_total'],'N2')"
             },
@@ -269,7 +269,8 @@
             "01JDWDTZHPO4Y2NHQTUZE2KUPUD6XN32HM": "/Templates/delivery_note.docx",
             "01JDWDTZFZYAIDEBYQRVA35QIOZLIJT44Q": "/Templates/delivery_note_20231504.docx",
             "01JDWDTZFQ3ZSP2NA2BZF35UWB23JQCXAD": "/Templates/delivery_note_patterns_footer.docx",
-            "01YSGD4ZHGRQIOWC5TSVDIPPOQM22KDTA6": "/Templates/delivery_note_patterns_footer.docx"
+            "01YSGD4ZHGRQIOWC5TSVDIPPOQM22KDTA6": "/Templates/delivery_note_patterns_footer.docx",
+            "01JDWDTZBMG6AT32BGOZF3RBSYYLOKTJUN": "/Templates/delivery_note_patterns_footer.docx"
           }
         },
         "Convert_Word_Document_to_PDF": {
