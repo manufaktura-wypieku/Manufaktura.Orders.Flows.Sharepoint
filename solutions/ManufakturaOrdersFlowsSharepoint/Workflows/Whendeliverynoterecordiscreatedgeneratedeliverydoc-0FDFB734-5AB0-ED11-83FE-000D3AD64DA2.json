@@ -10,21 +10,30 @@
         },
         "runtimeSource": "embedded"
       },
-      "shared_commondataserviceforapps": {
+      "shared_commondataserviceforapps-1": {
         "api": {
           "name": "shared_commondataserviceforapps"
         },
         "connection": {
-          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_e53fc"
+          "connectionReferenceLogicalName": "mb_sharedcommondataserviceforapps_90747"
         },
         "runtimeSource": "embedded"
       },
-      "shared_wordonlinebusiness": {
+      "shared_wordonlinebusiness-1": {
         "api": {
           "name": "shared_wordonlinebusiness"
         },
         "connection": {
-          "connectionReferenceLogicalName": "mb_sharedwordonlinebusiness_1dce4"
+          "connectionReferenceLogicalName": "mb_sharedwordonlinebusiness_994b7"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_wordonlinebusiness-2": {
+        "api": {
+          "name": "shared_wordonlinebusiness"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "mb_sharedwordonlinebusiness_721ca"
         },
         "runtimeSource": "embedded"
       },
@@ -66,7 +75,8 @@
               "subscriptionRequest/message": 1,
               "subscriptionRequest/entityname": "mb_deliverynote",
               "subscriptionRequest/scope": 4,
-              "subscriptionRequest/runas": 1
+              "subscriptionRequest/runas": 1,
+              "subscriptionRequest/name": "0fdfb734-5ab0-ed11-83fe-000d3ad64da2"
             },
             "host": {
               "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
@@ -173,7 +183,7 @@
                 "host": {
                   "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
                   "operationId": "GetItem",
-                  "connectionName": "shared_commondataserviceforapps"
+                  "connectionName": "shared_commondataserviceforapps-1"
                 }
               },
               "metadata": {
@@ -255,7 +265,7 @@
             "host": {
               "apiId": "/providers/Microsoft.PowerApps/apis/shared_wordonlinebusiness",
               "operationId": "CreateFileItem",
-              "connectionName": "shared_wordonlinebusiness"
+              "connectionName": "shared_wordonlinebusiness-1"
             }
           },
           "runAfter": {
@@ -284,7 +294,7 @@
             "host": {
               "apiId": "/providers/Microsoft.PowerApps/apis/shared_wordonlinebusiness",
               "operationId": "GetFilePDF",
-              "connectionName": "shared_wordonlinebusiness"
+              "connectionName": "shared_wordonlinebusiness-2"
             }
           },
           "runAfter": {
@@ -302,7 +312,7 @@
             "parameters": {
               "dataset": "@parameters('SharePoint Data source (mb_SharePointDataSource)')",
               "folderPath": "/Shared Documents/Delivery notes/",
-              "name": "DN-@{outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_name']}-@{triggerOutputs()?['body/createdon']}.docx",
+              "name": "DN-@{variables('customer')?['mb_accountnumber']}-@{outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_name']}-@{triggerOutputs()?['body/createdon']}.docx",
               "body": "@body('Populate_a_Microsoft_Word_template')"
             },
             "host": {
@@ -331,7 +341,7 @@
             "parameters": {
               "dataset": "@parameters('SharePoint Data source (mb_SharePointDataSource)')",
               "folderPath": "/Shared Documents/Delivery notes",
-              "name": "DN-@{outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_name']}-@{triggerOutputs()?['body/createdon']}.pdf",
+              "name": "DN-@{variables('customer')?['mb_accountnumber']}-@{outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_name']}-@{triggerOutputs()?['body/createdon']}.pdf",
               "body": "@body('Convert_Word_Document_to_PDF')"
             },
             "host": {
@@ -361,6 +371,9 @@
             "Apply_to_each": [
               "Succeeded"
             ]
+          },
+          "metadata": {
+            "operationMetadataId": "1b640461-a82c-4abe-a5c4-69116e80a59f"
           }
         },
         "Parse_JSON_-_array_with_order_items": {
@@ -406,6 +419,9 @@
             "Compose_-_sort_products_by_ProductNumber": [
               "Succeeded"
             ]
+          },
+          "metadata": {
+            "operationMetadataId": "aba99e67-6aa5-4b16-a7cd-aac3f5a004c5"
           }
         }
       }
