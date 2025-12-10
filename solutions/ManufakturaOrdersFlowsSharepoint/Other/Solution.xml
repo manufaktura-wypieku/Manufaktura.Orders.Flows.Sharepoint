@@ -94,10 +94,6 @@
         <Dependent type="29" displayName="When delivery note record is created generate delivery document and update delivery note url" id="{0fdfb734-5ab0-ed11-83fe-000d3ad64da2}" />
       </MissingDependency>
       <MissingDependency>
-        <Required type="connectionreference" displayName="mb_sharedcommondataserviceforapps_90747" solution="Active" id.connectionreferencelogicalname="mb_sharedcommondataserviceforapps_90747" />
-        <Dependent type="29" displayName="When delivery note record is created generate delivery document and update delivery note url" id="{0fdfb734-5ab0-ed11-83fe-000d3ad64da2}" />
-      </MissingDependency>
-      <MissingDependency>
         <Required type="connectionreference" displayName="mb_sharedsharepointonline_caad0" solution="Active" id.connectionreferencelogicalname="mb_sharedsharepointonline_caad0" />
         <Dependent type="29" displayName="When delivery note record is created generate delivery document and update delivery note url" id="{0fdfb734-5ab0-ed11-83fe-000d3ad64da2}" />
       </MissingDependency>

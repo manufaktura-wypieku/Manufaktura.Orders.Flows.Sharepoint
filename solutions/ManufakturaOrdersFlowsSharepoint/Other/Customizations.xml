@@ -12,6 +12,14 @@
   <CustomControls />
   <EntityDataProviders />
   <connectionreferences>
+    <connectionreference connectionreferencelogicalname="mb_sharedcommondataserviceforapps_90747">
+      <connectionreferencedisplayname>Microsoft Dataverse ManufakturaCoreJobs-90747</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
     <connectionreference connectionreferencelogicalname="mb_sharedwordonlinebusiness_721ca">
       <connectionreferencedisplayname>Word Online (Business) ManufakturaOrdersFlowsSharepoint-721ca</connectionreferencedisplayname>
       <connectorid>/providers/Microsoft.PowerApps/apis/shared_wordonlinebusiness</connectorid>
