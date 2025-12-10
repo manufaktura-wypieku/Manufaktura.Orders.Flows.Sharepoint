@@ -80,9 +80,12 @@ jobs:
       RUNNER_DEBUG: 1
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           lfs: true
+
+      - name: Install Power Platform Tools
+        uses: microsoft/powerplatform-actions/actions-install@v1
 
       - name: Fetch the ready to ship solution from GH artifact store
         uses: actions/download-artifact@v4
