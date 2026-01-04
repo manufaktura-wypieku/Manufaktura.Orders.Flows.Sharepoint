@@ -7,6 +7,7 @@ on:
     types: [created]
 permissions:
   contents: write
+  issues: write
 jobs:
   Release-solution:
     uses: ./.github/workflows/release-solution-to-prod.yml
@@ -14,8 +15,11 @@ jobs:
       #You can specify the solution name here
       solution_name: ManufakturaOrdersFlowsSharepoint
       #Update your values here
+      TEST_ENVIRONMENT_URL: https://manufaktura-test.crm11.dynamics.com/
       PRODUCTION_ENVIRONMENT_URL: https://manufaktura.crm11.dynamics.com/
       CLIENT_ID: 6a478448-0380-4a07-8b3f-aa5a3ce468db
       TENANT_ID: 67734212-06c3-46e9-9205-f6aa9d7be810
+      APPROVERS: mbochenko
+      MINIMUM_APPROVALS: 1
     secrets:
       envSecret: ${{ secrets.PowerPlatformSPN }}

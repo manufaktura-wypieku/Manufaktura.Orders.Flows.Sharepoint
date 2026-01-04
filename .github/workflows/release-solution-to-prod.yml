@@ -28,6 +28,10 @@ on:
         description: "folder where the released binaries are going to be hosted *do not change*"
         type: string
         default: out/release
+      TEST_ENVIRONMENT_URL:
+        description: "Test environment url."
+        type: string
+        required: true
       PRODUCTION_ENVIRONMENT_URL:
         description: "Production environment url."
         type: string
@@ -40,6 +44,14 @@ on:
         description: "The tenant id"
         type: string
         required: true
+      APPROVERS:
+        description: "Comma-separated GitHub usernames allowed to approve promotion."
+        type: string
+        required: true
+      MINIMUM_APPROVALS:
+        description: "Number of required approvals before deploy."
+        type: number
+        default: 1
     secrets:
       envSecret:
         description: "The secret value for authentication using SPN"
@@ -73,8 +85,64 @@ jobs:
           name: managedSolutions
           path: ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}_unmanaged.zip
 
-  release-to-production:
+  approval-for-test:
     needs: [pack-unmanaged-solution]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Await manual approval for test deployment
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ secrets.GITHUB_TOKEN }}
+          approvers: ${{ inputs.APPROVERS }}
+          minimum-approvals: ${{ inputs.MINIMUM_APPROVALS }}
+          issue-title: "Approve deployment to TEST for ${{ inputs.solution_name }}"
+          issue-body: "Solution has been packed. Approve to proceed with TEST environment deployment."
+
+  release-to-test:
+    needs: [approval-for-test]
+    runs-on: windows-latest
+    env:
+      RUNNER_DEBUG: 1
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          lfs: true
+
+      - name: Install Power Platform Tools
+        uses: microsoft/powerplatform-actions/actions-install@v1
+
+      - name: Fetch the ready to ship solution from GH artifact store
+        uses: actions/download-artifact@v4
+        with:
+          name: managedSolutions
+          path: ${{ inputs.solution_release_folder}}
+      - name: Import solution to test env
+        uses: microsoft/powerplatform-actions/import-solution@v1
+        with:
+          environment-url: ${{inputs.TEST_ENVIRONMENT_URL}}
+          app-id: ${{inputs.CLIENT_ID}}
+          client-secret: ${{ secrets.envSecret }}
+          tenant-id: ${{inputs.TENANT_ID}}
+          solution-file: ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_unmanaged.zip
+          force-overwrite: true
+          publish-changes: true
+
+  approval-for-production:
+    needs: [release-to-test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Await manual approval for production deployment
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ secrets.GITHUB_TOKEN }}
+          approvers: ${{ inputs.APPROVERS }}
+          minimum-approvals: ${{ inputs.MINIMUM_APPROVALS }}
+          issue-title: "Approve deployment to PRODUCTION for ${{ inputs.solution_name }}"
+          issue-body: "Test deployment completed. Approve to proceed with PRODUCTION environment deployment."
+
+  release-to-production:
+    needs: [approval-for-production]
     runs-on: windows-latest
     env:
       RUNNER_DEBUG: 1
