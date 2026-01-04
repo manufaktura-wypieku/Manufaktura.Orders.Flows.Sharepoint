@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ImportExportXml version="9.2.25112.160" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.25112.160" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.25112.00160">
+<ImportExportXml version="9.2.25114.182" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.25114.182" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.25114.00182">
   <SolutionManifest>
     <UniqueName>ManufakturaOrdersFlowsSharepoint</UniqueName>
     <LocalizedNames>
@@ -95,10 +95,6 @@
       </MissingDependency>
       <MissingDependency>
         <Required type="connectionreference" displayName="mb_sharedsharepointonline_caad0" solution="Active" id.connectionreferencelogicalname="mb_sharedsharepointonline_caad0" />
-        <Dependent type="29" displayName="When delivery note record is created generate delivery document and update delivery note url" id="{0fdfb734-5ab0-ed11-83fe-000d3ad64da2}" />
-      </MissingDependency>
-      <MissingDependency>
-        <Required type="connectionreference" displayName="new_sharedcommondataserviceforapps_6e438" solution="Active" id.connectionreferencelogicalname="new_sharedcommondataserviceforapps_6e438" />
         <Dependent type="29" displayName="When delivery note record is created generate delivery document and update delivery note url" id="{0fdfb734-5ab0-ed11-83fe-000d3ad64da2}" />
       </MissingDependency>
       <MissingDependency>

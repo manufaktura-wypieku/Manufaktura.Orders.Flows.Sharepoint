@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ImportExportXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.25112.160" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.25112.00160">
+<ImportExportXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.25114.182" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.25114.00182">
   <Entities />
   <Roles />
   <Workflows />
@@ -12,8 +12,24 @@
   <CustomControls />
   <EntityDataProviders />
   <connectionreferences>
+    <connectionreference connectionreferencelogicalname="mb_sharedcommondataserviceforapps_1fbe0">
+      <connectionreferencedisplayname>Microsoft Dataverse ManufakturaOrdersFlowsSharepoint-1fbe0</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
     <connectionreference connectionreferencelogicalname="mb_sharedcommondataserviceforapps_90747">
       <connectionreferencedisplayname>Microsoft Dataverse ManufakturaCoreJobs-90747</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="mb_sharedcommondataserviceforapps_e1d1b">
+      <connectionreferencedisplayname>Microsoft Dataverse ManufakturaOrdersFlowsSharepoint-e1d1b</connectionreferencedisplayname>
       <connectorid>/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps</connectorid>
       <iscustomizable>1</iscustomizable>
       <promptingbehavior>0</promptingbehavior>
