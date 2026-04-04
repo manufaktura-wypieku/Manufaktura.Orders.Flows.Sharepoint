@@ -1,0 +1,61 @@
+name: deploy-solution-to-dev
+# Pack solution from the repo and import it into the DEV environment.
+# Use this after making direct changes to the solution source in code
+#  (e.g. flow definition edits) to verify they are correct and deployable
+#  before merging to main.
+
+on:
+  workflow_dispatch:
+    inputs:
+      solution_name:
+        description: "name of the solution to deploy to DEV"
+        required: true
+        default: ManufakturaOrdersFlowsSharepoint
+      solution_source_folder:
+        description: "folder containing the unpacked solution *do not change*"
+        required: true
+        default: solutions/
+      solution_outbound_folder:
+        description: "staging folder for the packed solution *do not change*"
+        required: true
+        default: out/solutions/
+
+env:
+  ENVIRONMENT_URL: "https://manufaktura-develop.crm11.dynamics.com/"
+  CLIENT_ID: "6a478448-0380-4a07-8b3f-aa5a3ce468db"
+  TENANT_ID: "9096fb11-ab2c-4e04-b90c-dc3ce88d59fb"
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-to-dev:
+    runs-on: windows-latest
+    env:
+      RUNNER_DEBUG: 1
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          lfs: true
+
+      - name: Install Power Platform Tools
+        uses: microsoft/powerplatform-actions/actions-install@v1
+
+      - name: Pack solution
+        uses: microsoft/powerplatform-actions/pack-solution@v1
+        with:
+          solution-folder: ${{ github.event.inputs.solution_source_folder}}/${{ github.event.inputs.solution_name }}
+          solution-file: ${{ github.event.inputs.solution_outbound_folder}}/${{ github.event.inputs.solution_name }}_unmanaged.zip
+          solution-type: Unmanaged
+
+      - name: Import solution to dev env
+        uses: microsoft/powerplatform-actions/import-solution@v1
+        with:
+          environment-url: ${{ env.ENVIRONMENT_URL }}
+          app-id: ${{ env.CLIENT_ID }}
+          client-secret: ${{ secrets.PowerPlatformSPN }}
+          tenant-id: ${{ env.TENANT_ID }}
+          solution-file: ${{ github.event.inputs.solution_outbound_folder}}/${{ github.event.inputs.solution_name }}_unmanaged.zip
+          force-overwrite: true
+          publish-changes: true
