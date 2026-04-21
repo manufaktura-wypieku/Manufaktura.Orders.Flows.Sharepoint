@@ -1,13 +1,9 @@
-name: release-solution-to-prod-reusable
+name: Deploy solution to TEST and PROD (reusable)
 # Reusable workflow
-# convert solution to managed (using a build PowerPlatform environment for the conversion)
-# upload the solution to the GitHub artifacts and deploy to the PROD environment
+# Pack the solution, deploy to TEST (with approval), then deploy to PROD (with approval)
 on:
   workflow_call:
     inputs:
-      #Do Not change these values
-      #Values are set by the caller
-      #caller sample: release-action-call.ymnl
       solution_name:
         description: "The solution name."
         type: string
@@ -52,6 +48,16 @@ on:
         description: "Number of required approvals before deploy."
         type: number
         default: 1
+      TEST_DEPLOYMENT_SETTINGS:
+        description: "Path to TEST environment deployment settings file (maps connection references to connections)."
+        type: string
+        required: false
+        default: ""
+      PROD_DEPLOYMENT_SETTINGS:
+        description: "Path to PROD environment deployment settings file (maps connection references to connections)."
+        type: string
+        required: false
+        default: ""
     secrets:
       envSecret:
         description: "The secret value for authentication using SPN"
@@ -60,7 +66,6 @@ on:
 jobs:
   pack-unmanaged-solution:
     runs-on: windows-latest
-    # or you can say runs-on: ubuntu-latest
     env:
       RUNNER_DEBUG: 1
 
@@ -118,6 +123,7 @@ jobs:
           name: managedSolutions
           path: ${{ inputs.solution_release_folder}}
       - name: Import solution to test env
+        if: inputs.TEST_DEPLOYMENT_SETTINGS == ''
         uses: microsoft/powerplatform-actions/import-solution@v1
         with:
           environment-url: ${{inputs.TEST_ENVIRONMENT_URL}}
@@ -127,6 +133,19 @@ jobs:
           solution-file: ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_unmanaged.zip
           force-overwrite: true
           publish-changes: true
+
+      - name: Import solution to test env (with deployment settings)
+        if: inputs.TEST_DEPLOYMENT_SETTINGS != ''
+        uses: microsoft/powerplatform-actions/import-solution@v1
+        with:
+          environment-url: ${{inputs.TEST_ENVIRONMENT_URL}}
+          app-id: ${{inputs.CLIENT_ID}}
+          client-secret: ${{ secrets.envSecret }}
+          tenant-id: ${{inputs.TENANT_ID}}
+          solution-file: ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_unmanaged.zip
+          force-overwrite: true
+          publish-changes: true
+          deployment-settings-file: ${{ inputs.TEST_DEPLOYMENT_SETTINGS }}
 
   approval-for-production:
     needs: [release-to-test]
@@ -161,6 +180,7 @@ jobs:
           name: managedSolutions
           path: ${{ inputs.solution_release_folder}}
       - name: Import solution to prod env
+        if: inputs.PROD_DEPLOYMENT_SETTINGS == ''
         uses: microsoft/powerplatform-actions/import-solution@v1
         with:
           environment-url: ${{inputs.PRODUCTION_ENVIRONMENT_URL}}
@@ -170,3 +190,16 @@ jobs:
           solution-file: ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_unmanaged.zip
           force-overwrite: true
           publish-changes: true
+
+      - name: Import solution to prod env (with deployment settings)
+        if: inputs.PROD_DEPLOYMENT_SETTINGS != ''
+        uses: microsoft/powerplatform-actions/import-solution@v1
+        with:
+          environment-url: ${{inputs.PRODUCTION_ENVIRONMENT_URL}}
+          app-id: ${{inputs.CLIENT_ID}}
+          client-secret: ${{ secrets.envSecret }}
+          tenant-id: ${{inputs.TENANT_ID}}
+          solution-file: ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_unmanaged.zip
+          force-overwrite: true
+          publish-changes: true
+          deployment-settings-file: ${{ inputs.PROD_DEPLOYMENT_SETTINGS }}

@@ -1,10 +1,14 @@
-name: Release action
-# Call the reusable workflow release-solution-with-inputs.yml
-# Release your solution to prod when you create a new release.
+name: Deploy solution to TEST and PROD
+# Triggered automatically when changes are merged to main, or manually.
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - main
+    paths:
+      - "solutions/**"
+      - "deploymentSettings/**"
+  workflow_dispatch:
 permissions:
   contents: write
   issues: write
@@ -12,14 +16,14 @@ jobs:
   Release-solution:
     uses: ./.github/workflows/release-solution-to-prod.yml
     with:
-      #You can specify the solution name here
       solution_name: ManufakturaOrdersFlowsSharepoint
-      #Update your values here
       TEST_ENVIRONMENT_URL: https://manufaktura-test.crm11.dynamics.com/
       PRODUCTION_ENVIRONMENT_URL: https://manufaktura.crm11.dynamics.com/
       CLIENT_ID: 6a478448-0380-4a07-8b3f-aa5a3ce468db
-      TENANT_ID: 67734212-06c3-46e9-9205-f6aa9d7be810
+      TENANT_ID: 9096fb11-ab2c-4e04-b90c-dc3ce88d59fb
       APPROVERS: mbochenko
       MINIMUM_APPROVALS: 1
+      TEST_DEPLOYMENT_SETTINGS: deploymentSettings/test.json
+      PROD_DEPLOYMENT_SETTINGS: deploymentSettings/prod.json
     secrets:
       envSecret: ${{ secrets.PowerPlatformSPN }}

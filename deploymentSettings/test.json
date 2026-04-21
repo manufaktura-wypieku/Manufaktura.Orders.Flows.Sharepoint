@@ -1,0 +1,19 @@
+{
+  "ConnectionReferences": [
+    {
+      "LogicalName": "mb_sharedcommondataserviceforapps_aee49",
+      "ConnectionId": "29a40998f3bf4a2b92aaf5c04a98dee8",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+    },
+    {
+      "LogicalName": "mb_sharedwordonlinebusiness_721ca",
+      "ConnectionId": "shared-wordonlinebus-ac72ca90-1426-4175-af6a-f1a00cc2ae87",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_wordonlinebusiness"
+    },
+    {
+      "LogicalName": "mb_sharedsharepointonline_caad0",
+      "ConnectionId": "REPLACE_WITH_TEST_SHAREPOINT_CONNECTION_ID",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+    }
+  ]
+}
