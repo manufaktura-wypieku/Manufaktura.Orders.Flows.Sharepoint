@@ -112,7 +112,9 @@
         },
         "Initialize_variable_-_customer": {
           "runAfter": {
-            "Get_Order,_Customer_and_Order_Items": ["Succeeded"]
+            "Get_Order,_Customer_and_Order_Items": [
+              "Succeeded"
+            ]
           },
           "metadata": {
             "operationMetadataId": "badc9ce9-9a58-4261-9097-81584c8f17fc"
@@ -130,7 +132,9 @@
         },
         "Initialize_variable_-_order_items": {
           "runAfter": {
-            "Initialize_variable_-_customer": ["Succeeded"]
+            "Initialize_variable_-_customer": [
+              "Succeeded"
+            ]
           },
           "metadata": {
             "operationMetadataId": "72acaf6c-928c-4d93-a89b-a0f0b45df7f7"
@@ -148,7 +152,9 @@
         },
         "Initialize_variable_-_order_items_fields": {
           "runAfter": {
-            "Initialize_variable_-_order_items": ["Succeeded"]
+            "Initialize_variable_-_order_items": [
+              "Succeeded"
+            ]
           },
           "metadata": {
             "operationMetadataId": "70327d03-5e62-4964-a206-573f9f699330"
@@ -188,7 +194,9 @@
             },
             "Append_to_array_variable": {
               "runAfter": {
-                "Get_product": ["Succeeded"]
+                "Get_product": [
+                  "Succeeded"
+                ]
               },
               "metadata": {
                 "operationMetadataId": "65f2f026-a5d4-4a49-87b1-9624c6b1fbde"
@@ -208,7 +216,9 @@
             }
           },
           "runAfter": {
-            "Initialize_variable_-_order_items_fields": ["Succeeded"]
+            "Initialize_variable_-_order_items_fields": [
+              "Succeeded"
+            ]
           },
           "metadata": {
             "operationMetadataId": "64a38616-261a-438a-aac2-3e3ce3d3e20c"
@@ -217,7 +227,9 @@
         },
         "Update_a_row": {
           "runAfter": {
-            "Create_pdf_file": ["Succeeded"]
+            "Create_pdf_file": [
+              "Succeeded"
+            ]
           },
           "metadata": {
             "operationMetadataId": "56dc7c8f-3dd0-468f-98f2-1236e9b29109"
@@ -240,7 +252,9 @@
         },
         "Populate_a_Microsoft_Word_template": {
           "runAfter": {
-            "Parse_JSON_-_array_with_order_items": ["Succeeded"]
+            "Parse_JSON_-_array_with_order_items": [
+              "Succeeded"
+            ]
           },
           "metadata": {
             "01JDWDTZBSCJPUVKDSHVDJ6COI7K4MYNBR": "/Templates/delivery_note.docx",
@@ -277,7 +291,9 @@
         },
         "Convert_Word_Document_to_PDF": {
           "runAfter": {
-            "Create_file": ["Succeeded"]
+            "Create_file": [
+              "Succeeded"
+            ]
           },
           "metadata": {
             "operationMetadataId": "24be7c63-b608-480a-803d-8a2b39a94980"
@@ -299,7 +315,9 @@
         },
         "Create_file": {
           "runAfter": {
-            "Populate_a_Microsoft_Word_template": ["Succeeded"]
+            "Populate_a_Microsoft_Word_template": [
+              "Succeeded"
+            ]
           },
           "metadata": {
             "operationMetadataId": "d6b9f40c-4a7d-4a08-b9bd-2de289cb8076"
@@ -327,7 +345,9 @@
         },
         "Create_pdf_file": {
           "runAfter": {
-            "Convert_Word_Document_to_PDF": ["Succeeded"]
+            "Convert_Word_Document_to_PDF": [
+              "Succeeded"
+            ]
           },
           "metadata": {
             "operationMetadataId": "bc10873d-a0fb-4838-bc76-abc9952ea1c1"
@@ -355,7 +375,9 @@
         },
         "Compose_-_sort_products_by_ProductNumber": {
           "runAfter": {
-            "Apply_to_each": ["Succeeded"]
+            "Apply_to_each": [
+              "Succeeded"
+            ]
           },
           "metadata": {
             "operationMetadataId": "1b640461-a82c-4abe-a5c4-69116e80a59f"
@@ -365,7 +387,9 @@
         },
         "Parse_JSON_-_array_with_order_items": {
           "runAfter": {
-            "Compose_-_sort_products_by_ProductNumber": ["Succeeded"]
+            "Compose_-_sort_products_by_ProductNumber": [
+              "Succeeded"
+            ]
           },
           "metadata": {
             "operationMetadataId": "aba99e67-6aa5-4b16-a7cd-aac3f5a004c5"
