@@ -280,7 +280,7 @@
               "dynamicFileSchema/1693802890": "@variables('customer')?['address1_city']",
               "dynamicFileSchema/-1668397503": "@variables('customer')?['mb_accountnumber']",
               "dynamicFileSchema/-2060699158": "@if(equals(variables('customer')?['mb_redbasket'], true), 'C', '')",
-              "dynamicFileSchema/-689995792": "@outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_deliverydate@OData.Community.Display.V1.FormattedValue']",
+              "dynamicFileSchema/-689995792": "@concat(substring(outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_deliverydate'], 8, 2), '/', substring(outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_deliverydate'], 5, 2), '/', substring(outputs('Get_Order,_Customer_and_Order_Items')?['body/mb_deliverydate'], 0, 4))",
               "dynamicFileSchema/-818341669": "@variables('customer')?['name']",
               "dynamicFileSchema/-1303077992": "@variables('customer')?['address1_postalcode']",
               "dynamicFileSchema/-1781177440": "@body('Parse_JSON_-_array_with_order_items')",
